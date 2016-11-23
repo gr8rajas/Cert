@@ -42,7 +42,7 @@ sqoop import \
 
 
 
-#Ingest real-time and near-real time (NRT) streaming data into HDFS using Flume-----------STILL PENDING(Near Realtime)
+#Ingest real-time and near-real time (NRT) streaming data into HDFS using Flume-----------(Near Realtime)
 
 
 twitter-agent.sources = twitter
