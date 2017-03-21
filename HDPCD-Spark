@@ -12,6 +12,7 @@ dataRDD.saveAsTextFile("file:///root/spark-prac/dataop")
 }
 
 
+
 from pyspark import SparkConf,SparkContext
 conf = SparkConf().setAppName("PyhtonAPP")
 sc = SparkContext(conf = conf)
@@ -20,3 +21,22 @@ for line in file.collect():
  print(line)
 
 spark-submit --master yarn-cluster --executor-memory 1G --num-executors 3 2nd.py
+
+
+
+
+import org.apache.spark.SparkConf
+import org.apache.spark.SparkContext
+import org.apache.spark.storage.StorageLevel._
+
+object firstexample {
+def main(args: Array[String])
+{
+val conf = new SparkConf().setAppName("Raja")
+val sc = new SparkContext(conf)
+val dataRDD = sc.textFile("file:///root/spark-prac/data.txt")
+dataRDD.persist(MEMORY_AND_DISK)
+dataRDD.saveAsTextFile("file:///root/spark-prac/dataop")
+}
+}
+
