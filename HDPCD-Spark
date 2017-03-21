@@ -40,3 +40,26 @@ dataRDD.saveAsTextFile("file:///root/spark-prac/dataop")
 }
 }
 
+
+import org.apche.spark.SparkConf
+import org.apache.spark.SparkContext
+
+object latest {
+def main(args: Array[String])
+{
+
+val conf = new SparkConf().set()
+val sc = new SparkContext(conf)
+val deptRDD = sc.textFile("file:///root/spark-prac/data/dept.data")
+val catRDD = sc.textFile("file:///root/spark-prac/data/categories.data")
+
+val mapRDD = deptRDD.map(x => x.split(",")).map(x => (x(0).toInt,x(1)))
+val catmapRDD = catRDD.map(x => x.split(",")).map(x => (x(1).toInt,x(2)))
+
+val joinRDD = mapRDD.join(catmapRDD)
+
+joinRDD.saveAsTextFile("file:///root/spark-prac/data/joinopbrack")
+
+}
+
+
