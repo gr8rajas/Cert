@@ -86,3 +86,36 @@ joinRDD.saveAsTextFile("file:///root/spark-prac/data/joinopbrack")
 }
 
 
+import org.apache.spark.sql.hive.orc._
+import org.apache.spark.sql._
+
+val hiveContext = new org.apache.spark.sql.hive.HiveContext(sc)
+
+hiveContext.sql("create table yahoo_orc_table (date STRING,  volume INT, adj_price FLOAT) stored as orc")
+val yahoo_stocks = sc.textFile("hdfs://sandbox.hortonworks.com:8020/tmp/yahoo_stocks.csv")
+
+#Seperating Header
+val header = yahoo_stocks.first
+#Seperate Data
+val data = yahoo_stocks.mapPartitionsWithIndex { (idx, iter) => if (idx == 0) iter.drop(1) else iter }
+
+case class YahooStockPrice(date: String, open: Float, high: Float, low: Float, close: Float, volume: Integer, adjClose: Float)
+
+val stockprice = data.map(_.split(",")).map(row => YahooStockPrice(row(0), row(1).trim.toFloat, row(2).trim.toFloat,  row(6).trim.toFloat)).toDF()
+stockprice.registerTempTable("yahoo_stocks_temp")
+val results = sqlContext.sql("SELECT * FROM yahoo_stocks_temp")
+
+results.map(t => "Stock Entry: " + t.toString).collect().foreach(println)
+results.write.format("orc").save("yahoo_stocks_orc")
+
+
+#Reading ORC
+val hiveContext = new org.apache.spark.sql.hive.HiveContext(sc)
+val yahoo_stocks_orc = hiveContext.read.format("orc").load("yahoo_stocks_orc")
+
+yahoo_stocks_orc.registerTempTable("orcTest")
+hiveContext.sql("SELECT * from orcTest").collect.foreach(println)
+
+#Writing as a CSV file 
+df.map(x => x.mkString("|")).saveAsTextFile("file.csv")
+
