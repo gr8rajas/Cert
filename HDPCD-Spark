@@ -38,6 +38,29 @@ val dataRDD = sc.textFile("file:///root/spark-prac/data.txt")
 dataRDD.persist(MEMORY_AND_DISK)
 dataRDD.saveAsTextFile("file:///root/spark-prac/dataop")
 }
+
+
+
+import org.apache.spark.SparkConf
+import.org.apche.spark.SparkContext
+import org.apache.spark.SQLContext
+
+val conf = new Sparkconf().setAppName("Ex")
+val sc = new SparkContext(conf)
+val sqlContext = new org.apache.spark.sql.SQLContext(sc)
+
+case class orders(order_id:String,order_date:String,cust_id:String,status:String)
+
+val ordersRDD = sc.textFile("file:///root/spark-prac/data/orders.data")
+val latestRDD = ordersRDD.map(x => x.split(",")).map(x => orders(x(0),x(1),x(2),x(3)))
+
+import sqlContext.implicits._
+val dfex = latestRDD.toDF()
+dfex.registerTempTable("dfex")
+
+val querydata = sqlContext.sql("select order_id,status from dfex")
+querydata.collect().foreach(println)
+
 }
 
 
