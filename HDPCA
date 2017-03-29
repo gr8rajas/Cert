@@ -86,6 +86,16 @@ flush privileges;
 
 ambari-server setup  --jdbc-db=mysql --jdbc-driver=/usr/share/java/mysql-connector
 
+#ACLS DEMO
+
+hdfs dfs -setfacl -m user:raja:rwx /user/raja
+
+#Create Snapshot
+hdfs dfs -createSnapshot /user/hdfs/snapshot
+
+#Recover Snapshot
+hdfs dfs -cp -ptopax /.snapshot/ user/hdfs/
+
 
 
 
