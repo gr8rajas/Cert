@@ -1,0 +1,91 @@
+
+##Setting up a Repository(Need to Setup a Repository before Installing Datanode)
+
+scp HDP* root@node1:/etc/yum.repos.d
+yum repolist
+
+##Installing Ambari Agent
+
+sudo yum -y install ambari-agent
+
+#Manual Install
+/etc/ambari-agent/conf
+
+Check ambari-agent.ini
+
+#Installing, Configuring, and Deploying a HDP Cluster
+1. Log In to Apache Ambari
+2. Launching the Ambari Install Wizard
+3. Name Your Cluster
+4. Select Version
+5. Install Options
+6. Confirm Hosts
+7. Choose Services
+8. Assign Masters
+9. Assign Slaves and Clients
+10. Customize Services
+11. Review
+12. Install, Start and Test
+13. Complete
+
+
+# Add a new Node to an Existing Cluster
+Ambari UI--Hosts
+
+#Add an HDP service to a cluster using Ambari 
+Use Ambari
+
+#Define and deploy a rack topology script 
+Search Configuring Rack Awareness On HDP
+/etc/hadoop/conf  on Namenode
+
+
+#Change the configuration of a service using Ambari 
+Filter Ambari UI
+check in Core-site.xml
+
+
+#Capacity Scheduler
+sudo find / -name "*yarn*.jar"
+jar tvf Resource-Manager-Jar-File | grep -i CapacityScheduler
+
+yarn radmin -refreshQueues
+
+
+
+#Home Directory for User and Configure Permissions
+hadoop fs -mkdir /user/raja
+
+hadoop fs -chown root:hdfs /user/raja
+hadoop fs -chmod 700 /user/raja/
+
+
+#Configure the include and exclude DataNode files 
+
+cd /etc/hadoop/conf
+vi dfs.exclude (Enter Node info)
+hdfs dfsadmin -refreshNodes
+
+#Enable Log Aggregation
+ <property>
+ <name>yarn.log-aggregation-enable</name>
+ <value>true</value>
+ </property>
+
+ <property>
+ <name>yarn.nodemanager.log-aggregation.roll-monitoring-interval-seconds</name>
+ <value>3600</value>
+ </property>         
+        
+
+#Users for a Database
+Create databse ranger;
+create user username identified by 'password';
+grant all on ranger.* to username;
+flush privileges;
+
+ambari-server setup  --jdbc-db=mysql --jdbc-driver=/usr/share/java/mysql-connector
+
+
+
+
